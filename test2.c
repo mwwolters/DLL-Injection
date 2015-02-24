@@ -1,7 +1,11 @@
+#include <stdio.h>
 #include <windows.h>
 int test()
 {
-	MessageBox(NULL, "Hello, world again!", "Hello, world again!", MB_OK);
+	char str[80];
+	int id = GetCurrentProcessId();
+	sprintf(str, "Hello, process: %d", id);
+	MessageBox(NULL, str, "Hello DLL 2!", MB_OK);
 	return 0;
 }
 
