@@ -4,56 +4,6 @@
 #include <psapi.h>
 #include <tlhelp32.h>
 
-void enumPids()
-{
-
-	DWORD aProcesses[1024], cbNeeded, cProcesses;
-	unsigned int i;
-
-	if( !EnumProcesses( aProcesses, sizeof(aProcesses), &cbNeeded))
-	{
-		return 1;
-	}
-
-	cProcesses = cbNeeded / sizeof(DWORD);
-
-	for( i=0; i < cProcesses; i++ )
-	{
-		if( aProcesses[i] != 0 )
-		{
-			printProcInfo( aProcesses[i] );
-		}
-	}
-
-	return 0;
-
-}
-
-void printProcInfo(DWORD processID)
-{
-	puts("Enumerating Processes");
-
-	TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
-
-	HANDLE hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
-
-	if (NULL != hProcess)
-	{
-		HMODULE hMod;
-		DWORD cbNeeded;
-
-		if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod), &cbNeeded) )
-		{
-			GetModuleBaseName( hProcess, hMod, szProcessName, sizeof(szProcessName)/sizeof(TCHAR) );
-		}
-	}
-
-	_tprintf( TEXT("%u\t\t%s"), szProcessName, processID);
-
-	CloseHandle( hProcess );
-
-}
-
 DWORD getThreadID(DWORD pid)
 {
 	puts("Getting Thread ID");
@@ -154,7 +104,6 @@ int processInject(int pid)
 int main(int argc, char* argv)
 {
 
-	//enumPids();
 	int pid;
 	puts("Inject into which PID?");
         scanf ("%u",&pid);
